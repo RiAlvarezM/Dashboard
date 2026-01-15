@@ -21,7 +21,7 @@ AUTOS = [
 ]
 
 PROPIEDADES = [
-    {"nombre": "Park Avenue", "valor": 224900.00, "fecha": date(2018, 12, 1)},
+    {"nombre": "Park Avenue", "valor": 224900.00, "fecha": date(2019, 1, 1)},
     {"nombre": "4 Islas", "valor": 120000.00, "fecha": date(2016, 5, 1)},
 ]
 
@@ -83,6 +83,26 @@ def load_db_totals():
     df['Patrimonio'] = df['Total'] - df['Prestamo'] + df['Propiedades'] + df['Automoviles']
     return df.sort_values(by='Fecha', ascending=False)
 
+def locked_number_input(label, key, **kwargs):
+    """Renderiza un number_input con un check para bloquearlo al marcarlo."""
+    lock_key = f"{key}_lock"
+    is_locked = st.session_state.get(lock_key, False)
+    col_input, col_lock = st.columns([6, 1])
+    value = col_input.number_input(
+        label=label,
+        key=key,
+        disabled=is_locked,
+        **kwargs,
+    )
+    col_lock.checkbox(
+        label="",
+        value=is_locked,
+        key=lock_key,
+        
+        #help="Marca para bloquear este campo y dejar constancia de que ya lo editaste.",
+    )
+    return value
+
 if "data_totals" not in st.session_state:
     st.session_state.data_totals = load_db_totals()
 
@@ -117,59 +137,59 @@ with st.container(border=True):
 with st.expander("💰 Ahorros", expanded=True):
     col1, col2, col3 = st.columns(3)
     with col1:
-        edioacc_ra = st.number_input(label="EDIOACC-Ricardo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_1")
-        edioacc_graciela = st.number_input(label="EDIOACC-Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_2")
-        bgeneral_flia = st.number_input(label="BGeneral-Flia", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_3")
+        edioacc_ra = locked_number_input(label="EDIOACC-Ricardo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_1")
+        edioacc_graciela = locked_number_input(label="EDIOACC-Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_2")
+        bgeneral_flia = locked_number_input(label="BGeneral-Flia", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_3")
     with col2:    
-        bgeneral_graciela = st.number_input(label="BGeneral-Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_4")
-        global_flia = st.number_input(label="Global-Flia", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_5")
-        banistmo = st.number_input(label="Banistmo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_6")
+        bgeneral_graciela = locked_number_input(label="BGeneral-Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_4")
+        global_flia = locked_number_input(label="Global-Flia", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_5")
+        banistmo = locked_number_input(label="Banistmo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_6")
     with col3:    
-        bac_ahorro = st.number_input(label="BAC-Ahorro", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_7")
-        global_online_gg = st.number_input(label="Global-OnlineGG", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_8")
-        schwab = st.number_input(label="Schwab", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_9")
+        bac_ahorro = locked_number_input(label="BAC-Ahorro", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_7")
+        global_online_gg = locked_number_input(label="Global-OnlineGG", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_8")
+        schwab = locked_number_input(label="Schwab", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_9")
 
 with st.expander("💼 Inversiones", expanded=True):
     col1, col2, col3 = st.columns(3)
     with col1:
-        profuturo = st.number_input(label="Profuturo - R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_1")
-        fortesza_ra = st.number_input(label="Fortesza RA", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_2")
-        fortesza_gg = st.number_input(label="Fortesza GG", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_3")
+        profuturo = locked_number_input(label="Profuturo - R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_1")
+        fortesza_ra = locked_number_input(label="Fortesza RA", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_2")
+        fortesza_gg = locked_number_input(label="Fortesza GG", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_3")
     with col2:    
-        paullier_online = st.number_input(label="Paullier Online", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_4")
-        interactive_brokers = st.number_input(label="Interactive Brokers", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_5")
-        criptos = st.number_input(label="Criptos", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_6")
+        paullier_online = locked_number_input(label="Paullier Online", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_4")
+        interactive_brokers = locked_number_input(label="Interactive Brokers", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_5")
+        criptos = locked_number_input(label="Criptos", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_6")
     with col3:    
-        bac_objetivo = st.number_input(label="BAC-Objetivo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_7")
-        charles_schwab = st.number_input(label="Charles Schwab", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_8")
-        global_online_escuela = st.number_input(label="Global Online - Escuela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_9")
+        bac_objetivo = locked_number_input(label="BAC-Objetivo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_7")
+        charles_schwab = locked_number_input(label="Charles Schwab", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_8")
+        global_online_escuela = locked_number_input(label="Global Online - Escuela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_9")
 
 with st.expander("👵🏼 Jubilación", expanded=False):
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.number_input(label="EDIOACC Plazo Fijo", min_value=0.00, value=20000.00, step=0.01,format="%0.2f", key="jubilacion_1")
-        st.number_input(label="EDIOACC - Jubilación R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_2")
-        st.number_input(label="EDIOACC - Jubilación G.G.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_3")
+        locked_number_input(label="EDIOACC Plazo Fijo", min_value=0.00, value=20000.00, step=0.01,format="%0.2f", key="jubilacion_1")
+        locked_number_input(label="EDIOACC - Jubilación R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_2")
+        locked_number_input(label="EDIOACC - Jubilación G.G.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_3")
     with col2:    
-        st.number_input(label="EDIOACC - Aportes R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_4")
-        st.number_input(label="EDIOACC - Aportes G.G.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_5")
-        st.number_input(label="EDIOACC - Hipoteca", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_6")
+        locked_number_input(label="EDIOACC - Aportes R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_4")
+        locked_number_input(label="EDIOACC - Aportes G.G.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_5")
+        locked_number_input(label="EDIOACC - Hipoteca", min_value=0.00, value=776.30, step=0.01,format="%0.2f", key="jubilacion_6")
     with col3:    
-        st.number_input(label="SIACAP", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_7")
-        st.number_input(label="Copa - Fondo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_8")
-        st.number_input(label="Progreso", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_9")
+        locked_number_input(label="SIACAP", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_7")
+        locked_number_input(label="Copa - Fondo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_8")
+        locked_number_input(label="Progreso", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_9")
 
 col1, col2 = st.columns(2)
 with col1:
     with st.expander("💳 Deuda", expanded=False):
-        st.number_input(label="Global TC - Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_1")
-        st.number_input(label="Global MC - Ricardo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_2")
-        st.number_input(label="BAC - Mastercard", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_3")
-        st.number_input(label="BAC - Visa Smartcash", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_4")
+        locked_number_input(label="Global TC - Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_1")
+        locked_number_input(label="Global MC - Ricardo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_2")
+        locked_number_input(label="BAC - Mastercard", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_3")
+        locked_number_input(label="BAC - Visa Smartcash", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_4")
 with col2:
     with st.expander("💸 Préstamos", expanded=False):   
-        st.number_input(label="4 Islas", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="prestamo_1")
-        st.number_input(label="Park Avenue", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="prestamo_2")
+        locked_number_input(label="4 Islas", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="prestamo_1")
+        locked_number_input(label="Park Avenue", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="prestamo_2")
 
 
 st.subheader("📈 Totales a Registrar")
@@ -198,7 +218,7 @@ with col_fecha:
 with col_boton:
     st.write("") # Espaciador
     st.write("") # Espaciador
-    if st.button("💾 Guardar Registro", use_container_width=True, type="primary"):
+    if st.button("💾 Guardar Registro", width="stretch", type="primary"):
         # --- Recolectar y sumar los valores de los inputs ---
         total_ahorro = sum(st.session_state[f"ahorro_{i}"] for i in range(1, 10))
         total_inversion = sum(st.session_state[f"inversion_{i}"] for i in range(1, 10))

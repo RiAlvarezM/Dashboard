@@ -1,0 +1,26 @@
+[
+  {
+    "tarea": "Bloqueadores de campos",
+    "completado": true
+  },
+  {
+    "tarea": "P\u00e1gina de mejoras",
+    "completado": true
+  },
+  {
+    "tarea": "Guardado del ultimo valor por cuenta para el proximo update",
+    "completado": false
+  },
+  {
+    "tarea": "Agregar proyecci\u00f3n de jubilacion",
+    "completado": false
+  },
+  {
+    "tarea": "Agregar calculo de flujo",
+    "completado": false
+  },
+  {
+    "tarea": "Agregar pagina de presupuesto",
+    "completado": false
+  }
+]
