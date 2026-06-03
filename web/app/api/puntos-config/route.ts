@@ -5,15 +5,20 @@ import type { PuntosData } from "@/types";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-function getAuthenticatedClient(request: Request) {
+function getClient(request: Request) {
   const authHeader = request.headers.get("authorization");
   const token = authHeader?.replace("Bearer ", "");
 
-  const client = createClient(supabaseUrl, supabaseKey);
+  const options: any = {};
   if (token) {
-    client.auth.setSession({ access_token: token, refresh_token: "" });
+    options.global = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
   }
-  return client;
+
+  return createClient(supabaseUrl, supabaseKey, options);
 }
 
 export async function GET() {
@@ -31,22 +36,22 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const data = await request.json() as PuntosData;
-    const supabase = getAuthenticatedClient(request);
+    const supabase = getClient(request);
 
-    console.log("Auth header:", request.headers.get("authorization")?.slice(0, 20));
+    const { error } = await supabase.from("config").upsert(
+      { key: "puntos_config", value: data },
+      { onConflict: "key" }
+    );
 
-    const { error, data: result } = await supabase.from("config").upsert({
-      key: "puntos_config",
-      value: data,
-    });
+    if (error) {
+      console.error("Supabase error:", error);
+      throw new Error(`${error.message} (${error.code})`);
+    }
 
-    console.log("Upsert result:", { error, result });
-
-    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
-    console.error("Error saving puntos config:", errorMsg, error);
-    return NextResponse.json({ error: errorMsg }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("PUT error:", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
