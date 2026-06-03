@@ -71,7 +71,10 @@ export function ConfiguracionClient({ initialCuentas, initialTarjetasData, initi
       for (const res of responses) {
         if (!res.ok) {
           const errData = await res.json();
-          throw new Error(errData.error || `Error: ${res.status}`);
+          const errorMsg = typeof errData.error === 'string'
+            ? errData.error
+            : JSON.stringify(errData.error || `Error: ${res.status}`);
+          throw new Error(errorMsg);
         }
       }
       router.refresh();
