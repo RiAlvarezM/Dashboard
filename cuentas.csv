@@ -1,34 +1,36 @@
-Categoria,Nombre_Cuenta
-Ahorro,EDIOACC - Ahorro R.A.
-Ahorro,EDIOACC - Ahorro G.G.
-Ahorro,Bco General - Ahorro RyG
-Ahorro,Bco General - Ahorro G.G.
-Ahorro,Global Bank - Ahorro
-Ahorro,Nequi
-Ahorro,BAC - Ahorro
-Ahorro,Global Online - GG
-Ahorro,Schwab
-Inversion,Profuturo - R.A.
-Inversion,Fortesza RA
-Inversion,Fortesza GG
-Inversion,Paullier Online
-Inversion,Interactive Brokers
-Inversion,Criptos
-Inversion,BAC-Objetivo
-Inversion,Charles Schwab
-Inversion,Global Online - Escuela
-Jubilacion,EDIOACC Plazo Fijo
-Jubilacion,EDIOACC - Jubilación R.A.
-Jubilacion,EDIOACC - Jubilación G.G.
-Jubilacion,EDIOACC - Aportes R.A.
-Jubilacion,EDIOACC - Aportes G.G.
-Jubilacion,EDIOACC - Hipoteca
-Jubilacion,SIACAP
-Jubilacion,Copa - Fondo
-Jubilacion,Progreso
-Deuda,Global TC - Graciela
-Deuda,Global MC - Ricardo
-Deuda,BAC - Mastercard
-Deuda,BAC - Visa Smartcash
-Prestamo,4 Islas
-Prestamo,Park Avenue
+Categoria,Nombre_Cuenta,Monto_Objetivo,Incluir,Ultimo_Valor
+Inversion,Profuturo - R.A.,0,True,825.93
+Inversion,Fortesza RA,0,True,395.44
+Inversion,Fortesza GG,0,False,0
+Inversion,Paullier Online,0,False,0
+Inversion,Interactive Brokers,0,True,2841.23
+Inversion,Criptos,0,True,302.38
+Inversion,BAC-Objetivo,0,True,4516.86
+Inversion,Charles Schwab,0,True,4677.19
+Ahorro,EDIOACC - Ahorro R.A.,0,True,1365.28
+Ahorro,EDIOACC - Ahorro G.G.,0,True,458.72
+Ahorro,Bco General - Ahorro RyG,0,True,265.9
+Ahorro,Bco General - Ahorro G.G.,0,True,417.71
+Ahorro,Global Bank - Ahorro (Tap + Ahorro),0,True,0
+Ahorro,Nequi,0,True,1.62
+Ahorro,BAC - Ahorro,0,True,1573.16
+Ahorro,Banesco,0,True,0
+Ahorro,Schwab,0,True,49.75
+Jubilacion,EDIOACC Plazo Fijo,20000,True,20000
+Jubilacion,EDIOACC - Jubilación R.A.,0,True,9457.91
+Jubilacion,EDIOACC - Jubilación G.G.,0,True,545.44
+Jubilacion,EDIOACC - Aportes R.A.,0,True,5055
+Jubilacion,EDIOACC - Aportes G.G.,0,True,3525
+Jubilacion,EDIOACC - Hipoteca,0,True,776.3
+Jubilacion,SIACAP,0,True,711.08
+Jubilacion,Copa - Fondo,0,True,2697.05
+Jubilacion,Progreso,0,True,2771.63
+Deuda,Global TC - Graciela,0,True,669.17
+Deuda,Global MC - Ricardo,0,True,883.28
+Deuda,BAC - Visa Smartcash,0,True,118.52
+Deuda,Banesco - MC Travel,0,True,7.22
+Prestamo,4 Islas,0,True,54966.37
+Prestamo,Park Avenue,0,True,117868.92
+Ahorro,Global Online,0,True,1000
+Ahorro,Quantia Corriente,0,True,0.08
+Inversion,Quantia Inversiones,0,True,201.16

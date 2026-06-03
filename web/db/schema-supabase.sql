@@ -1,0 +1,71 @@
+-- Dashboard Financiero — Supabase Schema (PostgreSQL)
+-- Run in the Supabase SQL Editor at https://app.supabase.com
+
+CREATE TABLE IF NOT EXISTS cuentas (
+  id BIGSERIAL PRIMARY KEY,
+  categoria TEXT NOT NULL,
+  nombre_cuenta TEXT UNIQUE NOT NULL,
+  monto_objetivo NUMERIC DEFAULT 0,
+  incluir BOOLEAN DEFAULT true,
+  ultimo_valor NUMERIC DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS networth (
+  id BIGSERIAL PRIMARY KEY,
+  fecha DATE UNIQUE NOT NULL,
+  ahorro NUMERIC DEFAULT 0,
+  inversion NUMERIC DEFAULT 0,
+  jubilacion NUMERIC DEFAULT 0,
+  deuda NUMERIC DEFAULT 0,
+  prestamo NUMERIC DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS flows (
+  id TEXT PRIMARY KEY,
+  kind TEXT NOT NULL,
+  name TEXT NOT NULL,
+  amount NUMERIC DEFAULT 0,
+  frequency TEXT NOT NULL,
+  start_date DATE,
+  end_date DATE,
+  day_of_month INTEGER,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS puntos (
+  id BIGSERIAL PRIMARY KEY,
+  fecha DATE NOT NULL,
+  categoria TEXT NOT NULL,
+  valor NUMERIC DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(fecha, categoria)
+);
+
+CREATE TABLE IF NOT EXISTS propiedades (
+  id BIGSERIAL PRIMARY KEY,
+  propiedad TEXT UNIQUE NOT NULL,
+  valor_avaluo NUMERIC DEFAULT 0,
+  fecha_avaluo DATE,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS config (
+  id BIGSERIAL PRIMARY KEY,
+  key TEXT UNIQUE NOT NULL,
+  value JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indexes for faster queries
+CREATE INDEX IF NOT EXISTS idx_networth_fecha ON networth(fecha);
+CREATE INDEX IF NOT EXISTS idx_puntos_fecha ON puntos(fecha);
+CREATE INDEX IF NOT EXISTS idx_config_key ON config(key);

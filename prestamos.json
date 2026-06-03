@@ -1,0 +1,53 @@
+{
+  "prestamos": [
+    {
+      "id": "4-islas",
+      "nombre": "Hipoteca 4 Islas",
+      "tipo": "hipoteca",
+      "amortizacion": [
+        {
+          "ano": 1,
+          "mes": "abril 2016",
+          "pago_num": 1,
+          "neto": 515.85,
+          "total": 524.41,
+          "capital": 327.10,
+          "extra": 0,
+          "interes": 188.75,
+          "mantenimiento": 97.76,
+          "feci": 0,
+          "gastos": 8.56,
+          "alquiler": 0,
+          "balance": 107672.90,
+          "balance_teorico": 107812.11,
+          "capital_acum": 327.10,
+          "interes_acum": 188.75,
+          "pagado_total": 515.85,
+          "porcentaje": 2.10,
+          "notas": ""
+        },
+        {
+          "ano": 1,
+          "mes": "mayo 2016",
+          "pago_num": 2,
+          "neto": 457.89,
+          "total": 524.41,
+          "capital": 188.71,
+          "extra": 0,
+          "interes": 269.18,
+          "mantenimiento": 97.76,
+          "feci": 0,
+          "gastos": 66.52,
+          "alquiler": 600,
+          "balance": 107484.19,
+          "balance_teorico": 107623.75,
+          "capital_acum": 515.81,
+          "interes_acum": 457.93,
+          "pagado_total": 973.74,
+          "porcentaje": 3.00,
+          "notas": ""
+        }
+      ]
+    }
+  ]
+}

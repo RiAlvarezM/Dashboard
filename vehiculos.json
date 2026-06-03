@@ -1,0 +1,14 @@
+[
+  {
+    "id": "v1",
+    "nombre": "Honda Civic",
+    "valor_original": 30000,
+    "anio_compra": 2018
+  },
+  {
+    "id": "v2",
+    "nombre": "Honda CRV",
+    "valor_original": 17500,
+    "anio_compra": 2013
+  }
+]

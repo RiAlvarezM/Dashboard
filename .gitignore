@@ -1,2 +1,29 @@
+# Environment
+.env.local
+.env*.local
+
 # Archivos csv
 *.csv
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+dist/
+.vercel/
+
+# IDEs
+.cursor/
+.claude/
+.vscode/
+.idea/
+.DS_Store
+
+# Supabase
+.supabase/

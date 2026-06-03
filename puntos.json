@@ -1,0 +1,80 @@
+{
+  "categorias": [
+    {
+      "id": "Global_TC_GG",
+      "nombre": "Global TC (Graciela)",
+      "color": "#34d399",
+      "equivalencia_dolar": 0.01,
+      "grupo": "Tarjetas"
+    },
+    {
+      "id": "Global_MC_RA",
+      "nombre": "Global MC (Ricardo)",
+      "color": "#38bdf8",
+      "equivalencia_dolar": 0.01,
+      "grupo": "Tarjetas"
+    },
+    {
+      "id": "BAC_Visa",
+      "nombre": "BAC Visa",
+      "color": "#818cf8",
+      "equivalencia_dolar": 1,
+      "grupo": "Tarjetas"
+    },
+    {
+      "id": "Copa_RA",
+      "nombre": "Copa Miles (Ricardo)",
+      "color": "#fbbf24",
+      "equivalencia_dolar": 1,
+      "grupo": "Millas"
+    },
+    {
+      "id": "Copa_GG",
+      "nombre": "Copa Miles (Graciela)",
+      "color": "#fb923c",
+      "equivalencia_dolar": 1,
+      "grupo": "Millas"
+    },
+    {
+      "id": "Marriott",
+      "nombre": "Marriott Bonvoy",
+      "color": "#e879f9",
+      "equivalencia_dolar": 1,
+      "grupo": "Hoteles"
+    },
+    {
+      "id": "Otros",
+      "nombre": "Otros",
+      "color": "#94a3b8",
+      "equivalencia_dolar": 0.085,
+      "grupo": "Otros"
+    },
+    {
+      "id": "BANESCO_MC",
+      "nombre": "Puntos Banesco",
+      "color": "#94a3b8",
+      "equivalencia_dolar": 0.01,
+      "grupo": "Tarjetas"
+    }
+  ],
+  "grupos": [
+    {
+      "nombre": "Tarjetas",
+      "sub_label": "puntos acumulados"
+    },
+    {
+      "nombre": "Millas",
+      "color_stat": "text-amber-400",
+      "sub_label": "ConnectMiles"
+    },
+    {
+      "nombre": "Hoteles",
+      "color_stat": "text-pink-400",
+      "sub_label": "puntos hotel"
+    },
+    {
+      "nombre": "Otros",
+      "sub_label": "otros programas"
+    }
+  ]
+}

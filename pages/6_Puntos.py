@@ -40,9 +40,10 @@ def locked_number_input(label, key, **kwargs):
         **kwargs,
     )
     col_lock.checkbox(
-        label="",
+        label="Bloquear",
         value=is_locked,
         key=lock_key,
+        label_visibility="collapsed"
     )
     return value
 

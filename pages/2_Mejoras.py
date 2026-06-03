@@ -61,9 +61,10 @@ for i, tarea in enumerate(checklist):
     
     # Checkbox
     completado = col_check.checkbox(
-        label="",
+        label="Completado",
         value=tarea["completado"],
-        key=f"check_{i}"
+        key=f"check_{i}",
+        label_visibility="collapsed"
     )
     
     # Texto (tachado si está completado)

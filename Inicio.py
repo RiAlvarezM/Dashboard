@@ -13,6 +13,7 @@ from datetime import date
 # --- CONFIGURACIÓN ---
 
 FILE_DB = 'networth_db.csv'
+FILE_CUENTAS = 'cuentas.csv'
 st.set_page_config(page_title="Gestor de Cuentas", layout="wide")
 
 AUTOS = [
@@ -27,6 +28,23 @@ PROPIEDADES = [
 
 ####################################################################
 # --- FUNCIONES ---
+
+def load_cuentas_config():
+    """Carga la configuración de cuentas desde el archivo CSV."""
+    if not os.path.exists(FILE_CUENTAS):
+        return pd.DataFrame(columns=['Categoria', 'Nombre_Cuenta', 'Monto_Objetivo', 'Incluir', 'Ultimo_Valor'])
+    df = pd.read_csv(FILE_CUENTAS)
+    # Convertir columna Incluir a booleano
+    df['Incluir'] = df['Incluir'].astype(str).str.lower() == 'true'
+    df['Monto_Objetivo'] = pd.to_numeric(df['Monto_Objetivo'], errors='coerce').fillna(0.0)
+    if 'Ultimo_Valor' not in df.columns:
+        df['Ultimo_Valor'] = 0.0
+    df['Ultimo_Valor'] = pd.to_numeric(df['Ultimo_Valor'], errors='coerce').fillna(0.0)
+    return df
+
+def get_cuentas_por_categoria(df_cuentas, categoria):
+    """Obtiene las cuentas activas de una categoría."""
+    return df_cuentas[(df_cuentas['Categoria'] == categoria) & (df_cuentas['Incluir'])].sort_values('Nombre_Cuenta')
 
 def years_between(start_date, end_date=None):
     if end_date is None:
@@ -95,18 +113,21 @@ def locked_number_input(label, key, **kwargs):
         **kwargs,
     )
     col_lock.checkbox(
-        label="",
+        label="Bloquear",
         value=is_locked,
         key=lock_key,
-        
-        #help="Marca para bloquear este campo y dejar constancia de que ya lo editaste.",
+        label_visibility="collapsed"
     )
     return value
 
 if "data_totals" not in st.session_state:
     st.session_state.data_totals = load_db_totals()
 
+if "df_cuentas" not in st.session_state:
+    st.session_state.df_cuentas = load_cuentas_config()
+
 data = st.session_state.data_totals
+df_cuentas = st.session_state.df_cuentas
 
 ####################################################################
 # --- INTERFACE DE USUARIO  ---
@@ -133,73 +154,96 @@ with st.container(border=True):
                 value=f"${propiedades_total:,.2f}",
                 help="Sin depreciación"
             )
-# AHORROS
-with st.expander("💰 Ahorros", expanded=True):
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        edioacc_ra = locked_number_input(label="EDIOACC-Ricardo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_1")
-        edioacc_graciela = locked_number_input(label="EDIOACC-Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_2")
-        bgeneral_flia = locked_number_input(label="BGeneral-Flia", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_3")
-    with col2:    
-        bgeneral_graciela = locked_number_input(label="BGeneral-Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_4")
-        global_flia = locked_number_input(label="Global-Flia", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_5")
-        banistmo = locked_number_input(label="Banistmo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_6")
-    with col3:    
-        bac_ahorro = locked_number_input(label="BAC-Ahorro", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_7")
-        global_online_gg = locked_number_input(label="Global-OnlineGG", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_8")
-        schwab = locked_number_input(label="Schwab", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="ahorro_9")
 
-with st.expander("💼 Inversiones", expanded=True):
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        profuturo = locked_number_input(label="Profuturo - R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_1")
-        fortesza_ra = locked_number_input(label="Fortesza RA", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_2")
-        fortesza_gg = locked_number_input(label="Fortesza GG", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_3")
-    with col2:    
-        paullier_online = locked_number_input(label="Paullier Online", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_4")
-        interactive_brokers = locked_number_input(label="Interactive Brokers", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_5")
-        criptos = locked_number_input(label="Criptos", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_6")
-    with col3:    
-        bac_objetivo = locked_number_input(label="BAC-Objetivo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_7")
-        charles_schwab = locked_number_input(label="Charles Schwab", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_8")
-        global_online_escuela = locked_number_input(label="Global Online - Escuela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="inversion_9")
+####################################################################
+# --- FUNCIÓN PARA CREAR INPUTS DINÁMICOS ---
 
-with st.expander("👵🏼 Jubilación", expanded=False):
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        locked_number_input(label="EDIOACC Plazo Fijo", min_value=0.00, value=20000.00, step=0.01,format="%0.2f", key="jubilacion_1")
-        locked_number_input(label="EDIOACC - Jubilación R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_2")
-        locked_number_input(label="EDIOACC - Jubilación G.G.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_3")
-    with col2:    
-        locked_number_input(label="EDIOACC - Aportes R.A.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_4")
-        locked_number_input(label="EDIOACC - Aportes G.G.", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_5")
-        locked_number_input(label="EDIOACC - Hipoteca", min_value=0.00, value=776.30, step=0.01,format="%0.2f", key="jubilacion_6")
-    with col3:    
-        locked_number_input(label="SIACAP", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_7")
-        locked_number_input(label="Copa - Fondo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_8")
-        locked_number_input(label="Progreso", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="jubilacion_9")
+def crear_inputs_dinámicos(df_cuentas, categoria, emoji, expanded=True):
+    """Crea inputs dinámicamente basados en la configuración de cuentas."""
+    cuentas = get_cuentas_por_categoria(df_cuentas, categoria)
+    
+    if len(cuentas) == 0:
+        with st.expander(f"{emoji} {categoria}", expanded=expanded):
+            st.info(f"No hay cuentas activas configuradas para {categoria}. Ve a ⚙️ Configuración para agregar.")
+        return [], []
+    
+    # Diccionario para almacenar los valores de esta categoría
+    valores_categoria = []
+    valores_por_cuenta = []
+    
+    with st.expander(f"{emoji} {categoria} ({len(cuentas)} cuentas)", expanded=expanded):
+        # Mostrar resumen de objetivos
+        total_objetivo = cuentas['Monto_Objetivo'].sum()
+        if total_objetivo > 0:
+            st.caption(f"📌 Monto objetivo total: ${total_objetivo:,.2f}")
+        
+        # Crear columnas para los inputs
+        cols = st.columns(3)
+        
+        for idx, (real_idx, cuenta) in enumerate(cuentas.iterrows()):
+            col = cols[idx % 3]
+            
+            with col:
+                nombre_cuenta = cuenta['Nombre_Cuenta']
+                monto_objetivo = float(cuenta['Monto_Objetivo'])
+                ultimo_valor = float(cuenta.get('Ultimo_Valor', 0.0))
+                key_name = f"{categoria}_{idx}"
+                
+                # Mostrar monto objetivo si existe
+                if monto_objetivo > 0:
+                    st.caption(f"🎯 ${monto_objetivo:,.2f}")
+                
+                valor = locked_number_input(
+                    label=nombre_cuenta,
+                    key=key_name,
+                    min_value=0.00,
+                    value=ultimo_valor,
+                    step=0.01,
+                    format="%0.2f"
+                )
+                
+                valores_categoria.append(valor)
+                valores_por_cuenta.append((real_idx, valor))
+        
+        # Mostrar total de esta categoría
+        total_categoria = sum(valores_categoria)
+        st.divider()
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.caption("")
+        with col2:
+            st.metric("Total " + categoria, f"${total_categoria:,.2f}")
+        with col3:
+            st.caption("")
+    
+    return valores_categoria, valores_por_cuenta
 
-col1, col2 = st.columns(2)
-with col1:
-    with st.expander("💳 Deuda", expanded=False):
-        locked_number_input(label="Global TC - Graciela", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_1")
-        locked_number_input(label="Global MC - Ricardo", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_2")
-        locked_number_input(label="BAC - Mastercard", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_3")
-        locked_number_input(label="BAC - Visa Smartcash", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="deuda_4")
-with col2:
-    with st.expander("💸 Préstamos", expanded=False):   
-        locked_number_input(label="4 Islas", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="prestamo_1")
-        locked_number_input(label="Park Avenue", min_value=0.00, value=0.00, step=0.01,format="%0.2f", key="prestamo_2")
+####################################################################
+# --- GENERAR INPUTS POR CATEGORÍA ---
 
+# Ahorros
+valores_ahorro, cuentas_ahorro = crear_inputs_dinámicos(df_cuentas, 'Ahorro', '💰', expanded=True)
+
+# Inversiones
+valores_inversion, cuentas_inversion = crear_inputs_dinámicos(df_cuentas, 'Inversion', '💼', expanded=True)
+
+# Jubilación
+valores_jubilacion, cuentas_jubilacion = crear_inputs_dinámicos(df_cuentas, 'Jubilacion', '👵🏼', expanded=False)
+
+# Deuda
+valores_deuda, cuentas_deuda = crear_inputs_dinámicos(df_cuentas, 'Deuda', '💳', expanded=False)
+
+# Préstamo
+valores_prestamo, cuentas_prestamo = crear_inputs_dinámicos(df_cuentas, 'Prestamo', '💸', expanded=False)
 
 st.subheader("📈 Totales a Registrar")
 with st.container(border=True):
     # --- Recolectar y sumar los valores de los inputs en tiempo real ---
-    total_ahorro_preview = sum(st.session_state.get(f"ahorro_{i}", 0) for i in range(1, 10))
-    total_inversion_preview = sum(st.session_state.get(f"inversion_{i}", 0) for i in range(1, 10))
-    total_jubilacion_preview = sum(st.session_state.get(f"jubilacion_{i}", 0) for i in range(1, 10))
-    total_deuda_preview = sum(st.session_state.get(f"deuda_{i}", 0) for i in range(1, 5))
-    total_prestamo_preview = sum(st.session_state.get(f"prestamo_{i}", 0) for i in range(1, 3))
+    total_ahorro_preview = sum(valores_ahorro)
+    total_inversion_preview = sum(valores_inversion)
+    total_jubilacion_preview = sum(valores_jubilacion)
+    total_deuda_preview = sum(valores_deuda)
+    total_prestamo_preview = sum(valores_prestamo)
 
     m_col1, m_col2, m_col3, m_col4, m_col5 = st.columns(5)
     m_col1.metric("Ahorro", f"${total_ahorro_preview:,.2f}")
@@ -220,11 +264,11 @@ with col_boton:
     st.write("") # Espaciador
     if st.button("💾 Guardar Registro", width="stretch", type="primary"):
         # --- Recolectar y sumar los valores de los inputs ---
-        total_ahorro = sum(st.session_state[f"ahorro_{i}"] for i in range(1, 10))
-        total_inversion = sum(st.session_state[f"inversion_{i}"] for i in range(1, 10))
-        total_jubilacion = sum(st.session_state[f"jubilacion_{i}"] for i in range(1, 10))
-        total_deuda = sum(st.session_state[f"deuda_{i}"] for i in range(1, 5))
-        total_prestamo = sum(st.session_state[f"prestamo_{i}"] for i in range(1, 3))
+        total_ahorro = sum(valores_ahorro)
+        total_inversion = sum(valores_inversion)
+        total_jubilacion = sum(valores_jubilacion)
+        total_deuda = sum(valores_deuda)
+        total_prestamo = sum(valores_prestamo)
 
         # --- Crear la nueva fila ---
         new_row = {
@@ -250,8 +294,16 @@ with col_boton:
         cols_to_save = ['Fecha', 'Ahorro', 'Inversion', 'Jubilacion', 'Deuda', 'Prestamo']
         st.session_state.data_totals[cols_to_save].to_csv(FILE_DB, index=False)
 
+        # --- Actualizar los últimos valores por cuenta ---
+        todas_las_cuentas_actualizadas = cuentas_ahorro + cuentas_inversion + cuentas_jubilacion + cuentas_deuda + cuentas_prestamo
+        for real_idx, valor in todas_las_cuentas_actualizadas:
+            st.session_state.df_cuentas.loc[real_idx, 'Ultimo_Valor'] = valor
+        
+        st.session_state.df_cuentas.to_csv(FILE_CUENTAS, index=False)
+
         # --- Recargar y recalcular todos los datos ---
         st.session_state.data_totals = load_db_totals()
+        st.session_state.df_cuentas = load_cuentas_config()
         st.success(f"✅ Registro para la fecha {fecha_registro.strftime('%Y-%m-%d')} guardado exitosamente.")
         st.rerun()
 

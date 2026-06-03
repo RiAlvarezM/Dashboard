@@ -1,0 +1,102 @@
+{
+  "tarjetas": [
+    {
+      "id": "smartcash",
+      "nombre": "BAC - Visa Smartcash",
+      "cuenta_ref": "BAC - Visa Smartcash",
+      "tipo": "tarjeta",
+      "fecha_corte": 12,
+      "seguro_tipo": "smartcash",
+      "seguro_params": {
+        "base": 2.5,
+        "pct": 0.0025,
+        "itbms": 0.05,
+        "umbral": 1000
+      },
+      "pagable_via_banesco": true
+    },
+    {
+      "id": "banesco",
+      "nombre": "Banesco - MC Travel",
+      "cuenta_ref": "Banesco - MC Travel",
+      "tipo": "tarjeta",
+      "fecha_corte": 16,
+      "seguro_tipo": "por_millar_fraccion",
+      "seguro_params": {
+        "costo_por_millar": 2.75
+      },
+      "pagable_via_banesco": false
+    },
+    {
+      "id": "global-mc",
+      "nombre": "Global MC - Ricardo",
+      "cuenta_ref": "Global MC - Ricardo",
+      "tipo": "tarjeta",
+      "fecha_corte": 25,
+      "seguro_tipo": "por_millar_diario",
+      "seguro_params": {
+        "costo_por_millar": 2.3
+      },
+      "pagable_via_banesco": false
+    },
+    {
+      "id": "global-tc-gg",
+      "nombre": "Global TC - Graciela",
+      "cuenta_ref": "Global TC - Graciela",
+      "tipo": "tarjeta",
+      "fecha_corte": 25,
+      "seguro_tipo": "por_millar_diario",
+      "seguro_params": {
+        "costo_por_millar": 2.3
+      },
+      "pagable_via_banesco": true
+    },
+    {
+      "id": "tarjeta-1776891100888",
+      "nombre": "Tigo Celular",
+      "cuenta_ref": "",
+      "fecha_corte": 17,
+      "tipo": "servicio",
+      "seguro_tipo": "por_millar_diario",
+      "seguro_params": {
+        "costo_por_millar": 0
+      },
+      "pagable_via_banesco": false,
+      "saldo": 36.2
+    },
+    {
+      "id": "tarjeta-1776901318973",
+      "nombre": "IDAAN Bahia",
+      "cuenta_ref": "",
+      "fecha_corte": 13,
+      "tipo": "servicio",
+      "seguro_tipo": "por_millar_diario",
+      "seguro_params": {
+        "costo_por_millar": 0
+      },
+      "pagable_via_banesco": false,
+      "saldo": 18.22
+    },
+    {
+      "id": "tarjeta-1776901435973",
+      "nombre": "Luz Bahia",
+      "cuenta_ref": "",
+      "fecha_corte": 17,
+      "tipo": "servicio",
+      "seguro_tipo": "por_millar_diario",
+      "seguro_params": {
+        "costo_por_millar": 0
+      },
+      "pagable_via_banesco": false,
+      "saldo": 67.49
+    }
+  ],
+  "fuentes_disponible": {
+    "categorias": [
+      "Ahorro"
+    ],
+    "cuentas_extra": [
+      "Global Online - Escuela"
+    ]
+  }
+}

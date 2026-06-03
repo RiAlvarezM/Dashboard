@@ -1,0 +1,14 @@
+{
+  "nombre": "Usuario",
+  "moneda": "B/.",
+  "locale": "es-PA",
+  "anio_nacimiento": 1990,
+  "jubilacion_defaults": {
+    "edad_retiro": 65,
+    "aporte_mensual": 500,
+    "aumento_anual": 3,
+    "retorno_anual": 7,
+    "meta_balance": 500000,
+    "pension_mensual": 800
+  }
+}
