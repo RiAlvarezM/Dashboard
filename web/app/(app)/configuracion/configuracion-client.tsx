@@ -70,11 +70,14 @@ export function ConfiguracionClient({ initialCuentas, initialTarjetasData, initi
 
       for (const res of responses) {
         if (!res.ok) {
-          const errData = await res.json();
-          const errorMsg = typeof errData.error === 'string'
-            ? errData.error
-            : JSON.stringify(errData.error || `Error: ${res.status}`);
-          throw new Error(errorMsg);
+          try {
+            const errData = await res.json();
+            console.log("API Error response:", errData, res.url);
+            const errorMsg = errData.error?.message || errData.error || `Error guardando en ${res.url}`;
+            throw new Error(String(errorMsg));
+          } catch (e) {
+            throw new Error(`Error ${res.status} en ${res.url}`);
+          }
         }
       }
       router.refresh();
