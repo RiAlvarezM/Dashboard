@@ -13,12 +13,14 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const data = await request.json() as PuntosData;
+    console.log("Saving puntos config:", JSON.stringify(data).slice(0, 200));
     await savePuntosConfig(data);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error saving puntos config:", error);
+    const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
+    console.error("Error saving puntos config:", errorMsg, error);
     return NextResponse.json({
-      error: error instanceof Error ? error.message : "Failed to save config"
+      error: errorMsg
     }, { status: 500 });
   }
 }
