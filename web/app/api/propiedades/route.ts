@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getPropiedades, savePropiedades } from "@/lib/data";
+import { getPropiedades } from "@/lib/data";
+import { getAuthenticatedClient } from "@/app/api/lib";
 import type { Propiedad } from "@/types";
 
 export async function GET() {
@@ -13,9 +14,16 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const data = await request.json() as Propiedad[];
-    await savePropiedades(data);
+    const supabase = getAuthenticatedClient(request);
+    const { error } = await supabase.from("config").upsert({
+      key: "propiedades",
+      value: data,
+    });
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to save propiedades" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : "Failed to save propiedades";
+    console.error("Error saving propiedades:", msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

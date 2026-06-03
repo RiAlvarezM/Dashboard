@@ -46,13 +46,21 @@ export function ConfiguracionClient({ initialCuentas, initialTarjetasData, initi
     setSaving(true);
     setError(null);
     try {
+      const { data: { session } } = await import("@/lib/data").then(m => m.supabase.auth.getSession());
+      const token = session?.access_token;
+
+      const headers = {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      };
+
       const responses = await Promise.all([
-        fetch("/api/cuentas", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuentas) }),
-        fetch("/api/tarjetas", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tarjetasData) }),
-        fetch("/api/puntos-config", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(puntosConfig) }),
-        fetch("/api/perfil", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(perfil) }),
-        fetch("/api/vehiculos", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(vehiculos) }),
-        fetch("/api/propiedades", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(propiedades) }),
+        fetch("/api/cuentas", { method: "PUT", headers, body: JSON.stringify(cuentas) }),
+        fetch("/api/tarjetas", { method: "PUT", headers, body: JSON.stringify(tarjetasData) }),
+        fetch("/api/puntos-config", { method: "PUT", headers, body: JSON.stringify(puntosConfig) }),
+        fetch("/api/perfil", { method: "PUT", headers, body: JSON.stringify(perfil) }),
+        fetch("/api/vehiculos", { method: "PUT", headers, body: JSON.stringify(vehiculos) }),
+        fetch("/api/propiedades", { method: "PUT", headers, body: JSON.stringify(propiedades) }),
       ]);
 
       for (const res of responses) {
