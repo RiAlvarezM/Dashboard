@@ -16,6 +16,9 @@ export async function PUT(request: Request) {
     await savePuntosConfig(data);
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to save config" }, { status: 500 });
+    console.error("Error saving puntos config:", error);
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : "Failed to save config"
+    }, { status: 500 });
   }
 }

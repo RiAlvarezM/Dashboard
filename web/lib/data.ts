@@ -166,17 +166,13 @@ export async function getBudget(): Promise<Budget> {
   if (error && error.code !== "PGRST116") throw error;
   if (!data) return {};
 
-  try {
-    return JSON.parse(data.value as string);
-  } catch {
-    return {};
-  }
+  return (data.value as Budget) || {};
 }
 
 export async function saveBudget(budget: Budget): Promise<void> {
   const { error } = await supabase.from("config").upsert({
     key: "presupuesto",
-    value: JSON.stringify(budget),
+    value: budget,
   });
 
   if (error) throw error;
@@ -248,17 +244,13 @@ export async function getPerfil(): Promise<PerfilConfig> {
   if (error && error.code !== "PGRST116") throw error;
   if (!data) return DEFAULT_PERFIL;
 
-  try {
-    return JSON.parse(data.value as string);
-  } catch {
-    return DEFAULT_PERFIL;
-  }
+  return (data.value as PerfilConfig) || DEFAULT_PERFIL;
 }
 
 export async function savePerfil(data: PerfilConfig): Promise<void> {
   const { error } = await supabase.from("config").upsert({
     key: "perfil",
-    value: JSON.stringify(data),
+    value: data,
   });
 
   if (error) throw error;
@@ -277,17 +269,13 @@ export async function getVehiculos(): Promise<Vehiculo[]> {
   if (error && error.code !== "PGRST116") throw error;
   if (!data) return DEFAULT_VEHICULOS;
 
-  try {
-    return JSON.parse(data.value as string);
-  } catch {
-    return DEFAULT_VEHICULOS;
-  }
+  return (data.value as Vehiculo[]) || DEFAULT_VEHICULOS;
 }
 
 export async function saveVehiculos(data: Vehiculo[]): Promise<void> {
   const { error } = await supabase.from("config").upsert({
     key: "vehiculos",
-    value: JSON.stringify(data),
+    value: data,
   });
 
   if (error) throw error;
@@ -319,23 +307,19 @@ export async function getPuntosConfig(): Promise<import("@/types").PuntosData> {
   if (error && error.code !== "PGRST116") throw error;
   if (!data) return DEFAULT_PUNTOS_CONFIG;
 
-  try {
-    const parsed = JSON.parse(data.value as string);
-    if (!parsed.grupos) parsed.grupos = DEFAULT_PUNTOS_CONFIG.grupos;
-    parsed.categorias = parsed.categorias.map((c: import("@/types").PuntoConfig) => ({
-      ...c,
-      grupo: c.grupo || "Otros",
-    }));
-    return parsed;
-  } catch {
-    return DEFAULT_PUNTOS_CONFIG;
-  }
+  const parsed = (data.value as import("@/types").PuntosData) || DEFAULT_PUNTOS_CONFIG;
+  if (!parsed.grupos) parsed.grupos = DEFAULT_PUNTOS_CONFIG.grupos;
+  parsed.categorias = parsed.categorias.map((c: import("@/types").PuntoConfig) => ({
+    ...c,
+    grupo: c.grupo || "Otros",
+  }));
+  return parsed;
 }
 
 export async function savePuntosConfig(data: import("@/types").PuntosData): Promise<void> {
   const { error } = await supabase.from("config").upsert({
     key: "puntos_config",
-    value: JSON.stringify(data),
+    value: data,
   });
 
   if (error) throw error;
@@ -386,17 +370,13 @@ export async function getTarjetas(): Promise<TarjetasData> {
   if (error && error.code !== "PGRST116") throw error;
   if (!data) return DEFAULT_TARJETAS;
 
-  try {
-    return JSON.parse(data.value as string);
-  } catch {
-    return DEFAULT_TARJETAS;
-  }
+  return (data.value as TarjetasData) || DEFAULT_TARJETAS;
 }
 
 export async function saveTarjetas(data: TarjetasData): Promise<void> {
   const { error } = await supabase.from("config").upsert({
     key: "tarjetas",
-    value: JSON.stringify(data),
+    value: data,
   });
 
   if (error) throw error;
@@ -410,17 +390,13 @@ export async function getPrestamos(): Promise<PrestamosData> {
   if (error && error.code !== "PGRST116") throw error;
   if (!data) return { prestamos: [] };
 
-  try {
-    return JSON.parse(data.value as string);
-  } catch {
-    return { prestamos: [] };
-  }
+  return (data.value as PrestamosData) || { prestamos: [] };
 }
 
 export async function savePrestamos(data: PrestamosData): Promise<void> {
   const { error } = await supabase.from("config").upsert({
     key: "prestamos",
-    value: JSON.stringify(data),
+    value: data,
   });
 
   if (error) throw error;

@@ -40,11 +40,13 @@ export function ConfiguracionClient({ initialCuentas, initialTarjetasData, initi
   const [vehiculos, setVehiculos] = useState(initialVehiculos);
   const [propiedades, setPropiedades] = useState(initialPropiedades);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSave = async () => {
     setSaving(true);
+    setError(null);
     try {
-      await Promise.all([
+      const responses = await Promise.all([
         fetch("/api/cuentas", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cuentas) }),
         fetch("/api/tarjetas", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(tarjetasData) }),
         fetch("/api/puntos-config", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(puntosConfig) }),
@@ -52,7 +54,18 @@ export function ConfiguracionClient({ initialCuentas, initialTarjetasData, initi
         fetch("/api/vehiculos", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(vehiculos) }),
         fetch("/api/propiedades", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(propiedades) }),
       ]);
+
+      for (const res of responses) {
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || `Error: ${res.status}`);
+        }
+      }
       router.refresh();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al guardar";
+      setError(msg);
+      console.error("Save error:", err);
     } finally {
       setSaving(false);
     }
@@ -147,10 +160,17 @@ export function ConfiguracionClient({ initialCuentas, initialTarjetasData, initi
   return (
     <div>
       <PageHeader title="Configuración" description="Gestión de cuentas y objetivos">
-        <Button onClick={handleSave} disabled={saving}>
-          <Save className="h-4 w-4" />
-          {saving ? "Guardando..." : "Guardar Cambios"}
-        </Button>
+        <div className="flex flex-col items-end gap-2">
+          <Button onClick={handleSave} disabled={saving}>
+            <Save className="h-4 w-4" />
+            {saving ? "Guardando..." : "Guardar Cambios"}
+          </Button>
+          {error && (
+            <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded px-3 py-2">
+              {error}
+            </div>
+          )}
+        </div>
       </PageHeader>
 
       <Tabs defaultValue="Perfil">
