@@ -18,16 +18,21 @@ export async function GET() {
 export async function PUT(req: NextRequest) {
   try {
     const cuentas = await req.json() as Cuenta[];
+    console.log("Saving cuentas...", cuentas.length);
     const supabase = getAuthenticatedClient(req);
     const { error } = await supabase.from("config").upsert({
       key: "cuentas",
       value: cuentas,
     });
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase error:", error);
+      throw error;
+    }
+    console.log("Cuentas saved successfully");
     return NextResponse.json({ ok: true });
   } catch (e) {
+    console.error("ERROR in PUT /api/cuentas:", e);
     const msg = e instanceof Error ? e.message : String(e);
-    console.error("Error saving cuentas:", msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

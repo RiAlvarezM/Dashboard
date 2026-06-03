@@ -47,39 +47,16 @@ export function ConfiguracionClient({ initialCuentas, initialTarjetasData, initi
     setError(null);
     try {
       const { supabase } = await import("@/lib/data");
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
 
-      if (!token) {
-        throw new Error("No authenticated");
-      }
-
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      };
-
-      const responses = await Promise.all([
-        fetch("/api/cuentas", { method: "PUT", headers, body: JSON.stringify(cuentas) }),
-        fetch("/api/tarjetas", { method: "PUT", headers, body: JSON.stringify(tarjetasData) }),
-        fetch("/api/puntos-config", { method: "PUT", headers, body: JSON.stringify(puntosConfig) }),
-        fetch("/api/perfil", { method: "PUT", headers, body: JSON.stringify(perfil) }),
-        fetch("/api/vehiculos", { method: "PUT", headers, body: JSON.stringify(vehiculos) }),
-        fetch("/api/propiedades", { method: "PUT", headers, body: JSON.stringify(propiedades) }),
+      await Promise.all([
+        supabase.from("config").upsert({ key: "cuentas", value: cuentas }),
+        supabase.from("config").upsert({ key: "tarjetas", value: tarjetasData }),
+        supabase.from("config").upsert({ key: "puntos_config", value: puntosConfig }),
+        supabase.from("config").upsert({ key: "perfil", value: perfil }),
+        supabase.from("config").upsert({ key: "vehiculos", value: vehiculos }),
+        supabase.from("config").upsert({ key: "propiedades", value: propiedades }),
       ]);
 
-      for (const res of responses) {
-        if (!res.ok) {
-          try {
-            const errData = await res.json();
-            console.log("API Error response:", errData, res.url);
-            const errorMsg = errData.error?.message || errData.error || `Error guardando en ${res.url}`;
-            throw new Error(String(errorMsg));
-          } catch (e) {
-            throw new Error(`Error ${res.status} en ${res.url}`);
-          }
-        }
-      }
       router.refresh();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error al guardar";
