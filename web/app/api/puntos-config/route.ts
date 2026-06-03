@@ -33,16 +33,20 @@ export async function PUT(request: Request) {
     const data = await request.json() as PuntosData;
     const supabase = getAuthenticatedClient(request);
 
-    const { error } = await supabase.from("config").upsert({
+    console.log("Auth header:", request.headers.get("authorization")?.slice(0, 20));
+
+    const { error, data: result } = await supabase.from("config").upsert({
       key: "puntos_config",
       value: data,
     });
+
+    console.log("Upsert result:", { error, result });
 
     if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
-    console.error("Error saving puntos config:", errorMsg);
+    console.error("Error saving puntos config:", errorMsg, error);
     return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }

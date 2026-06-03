@@ -46,12 +46,17 @@ export function ConfiguracionClient({ initialCuentas, initialTarjetasData, initi
     setSaving(true);
     setError(null);
     try {
-      const { data: { session } } = await import("@/lib/data").then(m => m.supabase.auth.getSession());
+      const { supabase } = await import("@/lib/data");
+      const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token;
+
+      if (!token) {
+        throw new Error("No authenticated");
+      }
 
       const headers = {
         "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
+        Authorization: `Bearer ${token}`,
       };
 
       const responses = await Promise.all([

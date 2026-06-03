@@ -7,9 +7,14 @@ export function getAuthenticatedClient(request: Request) {
   const authHeader = request.headers.get("authorization");
   const token = authHeader?.replace("Bearer ", "");
 
-  const client = createClient(supabaseUrl, supabaseKey);
+  const options: any = {};
   if (token) {
-    client.auth.setSession({ access_token: token, refresh_token: "" });
+    options.global = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
   }
-  return client;
+
+  return createClient(supabaseUrl, supabaseKey, options);
 }
