@@ -10,6 +10,7 @@ export default function PatrimonioPage() {
   const [cuentas, setCuentas] = useState<Cuenta[]>([]);
   const [historial, setHistorial] = useState<NetWorthRecord[]>([]);
   const [propiedades, setPropiedades] = useState<Propiedad[]>([]);
+  const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
   const [loading, setLoading] = useState(true);
   const today = new Date().toISOString().split("T")[0];
 
@@ -25,6 +26,7 @@ export default function PatrimonioPage() {
         setCuentas(c);
         setHistorial(h);
         setPropiedades(p);
+        setVehiculos(v);
       } catch (error) {
         console.error("Error loading data:", error);
       } finally {
@@ -46,7 +48,7 @@ export default function PatrimonioPage() {
     );
   }
 
-  const automoviles = calcularAutomovilesFromList([]);
+  const automoviles = calcularAutomovilesFromList(vehiculos);
   const propiedadesVal = calcularPropiedades(propiedades);
 
   const lastValues: Record<string, number> = {};
