@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCuentas, getPropiedades } from "@/lib/data";
+import { getCuentas, getPropiedades, getVehiculos } from "@/lib/data";
 import { getAuthenticatedClient } from "@/app/api/lib";
-import { calcularAutomoviles } from "@/lib/calculations";
+import { calcularAutomovilesFromList } from "@/lib/calculations";
 import type { Cuenta } from "@/types";
 
 export async function GET() {
   try {
     const cuentas = await getCuentas();
     const propiedades = await getPropiedades();
-    const automoviles = calcularAutomoviles();
+    const vehiculos = await getVehiculos();
+    const automoviles = calcularAutomovilesFromList(vehiculos);
     return NextResponse.json({ cuentas, propiedades, automoviles });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
