@@ -1,8 +1,8 @@
 "use client";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import type { Cuenta, NetWorthRecord, Propiedad } from "@/types";
-import { calcularTotales } from "@/lib/calculations";
+import type { Cuenta, NetWorthRecord, Propiedad, Vehiculo } from "@/types";
+import { calcularTotales, calcularAutomovilesFromList, calcularPropiedades } from "@/lib/calculations";
 import { formatCurrency, pctChange } from "@/lib/utils";
 import { PageHeader } from "@/components/layout/page-header";
 import { StatCard } from "@/components/ui/stat-card";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Save, Lock, Unlock, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Save, Lock, Unlock, Trash2, ChevronDown, ChevronUp, Download } from "lucide-react";
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from "recharts";
 
 const CATEGORIAS = ["Ahorro", "Inversion", "Jubilacion", "Deuda", "Prestamo"] as const;
@@ -34,13 +34,14 @@ interface Props {
   cuentas: Cuenta[];
   historial: NetWorthRecord[];
   propiedades: Propiedad[];
+  vehiculos: Vehiculo[];
   propiedadesVal: number;
   automoviles: number;
   lastValues: Record<string, number>;
   today: string;
 }
 
-export function PatrimonioClient({ cuentas, historial, propiedades, propiedadesVal, automoviles, lastValues, today }: Props) {
+export function PatrimonioClient({ cuentas, historial, propiedades, vehiculos, propiedadesVal, automoviles, lastValues, today }: Props) {
   const router = useRouter();
   const [values, setValues] = useState<Record<string, number>>(lastValues);
   const [locked, setLocked] = useState<Record<string, boolean>>({});
@@ -101,6 +102,29 @@ export function PatrimonioClient({ cuentas, historial, propiedades, propiedadesV
   const toggleCat = (cat: string) => setCollapsedCats((prev) => ({ ...prev, [cat]: !prev[cat] }));
 
   const sortedHistorial = [...historial].sort((a, b) => b.Fecha.localeCompare(a.Fecha));
+
+  const exportCSV = () => {
+    const headers = ["Fecha", "Patrimonio", "Ahorro", "Inversión", "Jubilación", "Deuda", "Préstamo", "Propiedades", "Vehículos"];
+    const rows = sortedHistorial.map((r) => [
+      r.Fecha,
+      r.Patrimonio,
+      r.Ahorro,
+      r.Inversion,
+      r.Jubilacion,
+      r.Deuda,
+      r.Prestamo,
+      calcularPropiedades(propiedades, r.Fecha),
+      calcularAutomovilesFromList(vehiculos, new Date(r.Fecha).getFullYear()),
+    ]);
+    const csv = [headers, ...rows].map((row) => row.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `patrimonio_historial_${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const donutData = [
     { name: "Ahorro", value: totales.Ahorro, color: "#38bdf8" },
@@ -257,13 +281,19 @@ export function PatrimonioClient({ cuentas, historial, propiedades, propiedadesV
       {/* Historical records */}
       <Card>
         <CardHeader>
-          <button
-            className="flex items-center justify-between w-full text-left"
-            onClick={() => setHistorialOpen((o) => !o)}
-          >
-            <CardTitle>Historial ({historial.length} registros)</CardTitle>
-            {historialOpen ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
-          </button>
+          <div className="flex items-center justify-between w-full">
+            <button
+              className="flex items-center gap-2 text-left flex-1"
+              onClick={() => setHistorialOpen((o) => !o)}
+            >
+              <CardTitle>Historial ({historial.length} registros)</CardTitle>
+              {historialOpen ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+            </button>
+            <Button variant="outline" size="sm" onClick={exportCSV} className="shrink-0 gap-1.5">
+              <Download className="h-3.5 w-3.5" />
+              CSV
+            </Button>
+          </div>
         </CardHeader>
         {historialOpen && (
           <CardContent className="p-0">
@@ -277,6 +307,8 @@ export function PatrimonioClient({ cuentas, historial, propiedades, propiedadesV
                     <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs">Inversión</th>
                     <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs">Deuda</th>
                     <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs">Préstamo</th>
+                    <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs">Propiedades</th>
+                    <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs">Vehículos</th>
                     <th className="w-10" />
                   </tr>
                 </thead>
@@ -291,6 +323,12 @@ export function PatrimonioClient({ cuentas, historial, propiedades, propiedadesV
                       <td className="px-4 py-2.5 text-right tabular-nums">{formatCurrency(r.Inversion)}</td>
                       <td className="px-4 py-2.5 text-right tabular-nums text-destructive">{formatCurrency(r.Deuda)}</td>
                       <td className="px-4 py-2.5 text-right tabular-nums text-orange-400">{formatCurrency(r.Prestamo)}</td>
+                      <td className="px-4 py-2.5 text-right tabular-nums text-emerald-400">
+                        {formatCurrency(calcularPropiedades(propiedades, r.Fecha))}
+                      </td>
+                      <td className="px-4 py-2.5 text-right tabular-nums text-sky-400">
+                        {formatCurrency(calcularAutomovilesFromList(vehiculos, new Date(r.Fecha).getFullYear()))}
+                      </td>
                       <td className="px-4 py-2.5">
                         <Button
                           variant="ghost"

@@ -1,14 +1,14 @@
 import { parseISO, addDays, addMonths, format } from "date-fns";
 import type { Cuenta, NetWorthRecord, Propiedad, Vehiculo, Flow, MonthlyFlowSummary } from "@/types";
 
-export function deprecatedValue(originalValue: number, purchaseYear: number, ratePerYear = 0.2) {
-  const currentYear = new Date().getFullYear();
-  const years = currentYear - purchaseYear;
+export function deprecatedValue(originalValue: number, purchaseYear: number, ratePerYear = 0.2, asOfYear?: number) {
+  const refYear = asOfYear ?? new Date().getFullYear();
+  const years = Math.max(0, refYear - purchaseYear);
   return Math.max(0, originalValue * Math.pow(1 - ratePerYear, years));
 }
 
-export function calcularAutomovilesFromList(vehiculos: Vehiculo[]): number {
-  return vehiculos.reduce((sum, v) => sum + deprecatedValue(v.valor_original, v.anio_compra, v.tasa_depreciacion ?? 0.2), 0);
+export function calcularAutomovilesFromList(vehiculos: Vehiculo[], asOfYear?: number): number {
+  return vehiculos.reduce((sum, v) => sum + deprecatedValue(v.valor_original, v.anio_compra, v.tasa_depreciacion ?? 0.2, asOfYear), 0);
 }
 
 // Keep backwards compat alias

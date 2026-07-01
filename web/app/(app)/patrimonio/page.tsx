@@ -61,6 +61,7 @@ export default function PatrimonioPage() {
       cuentas={cuentas}
       historial={historial}
       propiedades={propiedades}
+      vehiculos={vehiculos}
       propiedadesVal={propiedadesVal}
       automoviles={automoviles}
       lastValues={lastValues}
